@@ -1,11 +1,6 @@
 ---
-# ApplicationSet — Advanced Demo Scene
-#
-# Generates one Application per environment from a list generator.
-# Adding a new environment = adding one entry to the list.
-# No manual Application CR creation needed.
-#
-# Replace REPO_URL with your actual GitHub repo URL before applying.
+# ApplicationSet — with canary environment added.
+# Used in the second step of Scene 5 to show live environment addition via Git.
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -25,10 +20,14 @@ spec:
       - env: staging
         namespace: gitops-staging
         autoSync: "true"
-        prune: "false"          # staging: no auto-prune — require manual approval
+        prune: "false"
       - env: prod
         namespace: gitops-prod
-        autoSync: "false"       # prod: manual sync only — requires human gate
+        autoSync: "false"
+        prune: "false"
+      - env: canary
+        namespace: gitops-canary
+        autoSync: "true"
         prune: "false"
   template:
     metadata:
@@ -42,7 +41,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/enzobercasio/gitops-demo-repo
+        repoURL: REPO_URL
         targetRevision: main
         path: "overlays/{{env}}"
       destination:
@@ -50,7 +49,7 @@ spec:
         namespace: "{{namespace}}"
       syncPolicy:
         automated:
-          prune: false                  # overridden per-env by the template below
+          prune: false
           selfHeal: true
         syncOptions:
         - CreateNamespace=true
