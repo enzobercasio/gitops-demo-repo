@@ -7,6 +7,6 @@ resources:
 - ../../base
 images:
 - name: quay.io/redhatworkshops/welcome-php
-  newTag: latest
+  newTag: ffcd15
 patches:
 - path: replica-patch.yaml

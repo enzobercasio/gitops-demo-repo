@@ -1,0 +1,24 @@
+---
+# App-of-apps child — Production Application (manual sync)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-app-prod
+  namespace: openshift-gitops
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    environment: prod
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/enzobercasio/gitops-demo-repo                   # replaced by 03-bootstrap.sh
+    targetRevision: main
+    path: overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitops-prod
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    # No automated block — prod requires manual sync approval

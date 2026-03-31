@@ -8,4 +8,4 @@ resources:
 - ../../base
 images:
 - name: quay.io/redhatworkshops/welcome-php
-  newTag: latest
+  newTag: ffcd15
