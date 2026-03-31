@@ -1,0 +1,8 @@
+---
+# Prod: 3 replicas for high availability.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  replicas: 3

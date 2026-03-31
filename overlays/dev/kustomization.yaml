@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Dev overlay — 1 replica, v1 image (ffcd15).
+# DEMO STEP: change newTag from ffcd15 to latest, commit and push.
+# Argo CD detects the drift and auto-syncs within ~3 minutes.
+namespace: gitops-dev
+resources:
+- ../../base
+images:
+- name: quay.io/redhatworkshops/welcome-php
+  newTag: ffcd15

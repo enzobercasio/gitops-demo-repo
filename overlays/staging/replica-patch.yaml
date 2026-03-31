@@ -1,0 +1,8 @@
+---
+# Staging: 2 replicas for redundancy validation before prod.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  replicas: 2

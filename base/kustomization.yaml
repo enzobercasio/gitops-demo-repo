@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Shared base — all three environments (dev, staging, prod) reference this.
+# Each overlay sets its namespace, replica count, and resource limits.
+resources:
+- deployment.yaml
+- service.yaml
+- route.yaml

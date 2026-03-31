@@ -1,0 +1,28 @@
+---
+# App-of-apps child — Development Application
+# This file lives in gitops-repo/apps/ and is managed by the root-app.
+# Argo CD reads this directory and creates/updates the Application automatically.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-app-dev
+  namespace: openshift-gitops
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    environment: dev
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/enzobercasio/gitops-demo-repo                   # replaced by 03-bootstrap.sh
+    targetRevision: main
+    path: overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitops-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
