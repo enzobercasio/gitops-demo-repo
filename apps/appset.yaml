@@ -1,0 +1,57 @@
+---
+# ApplicationSet — Advanced Demo Scene
+#
+# Generates one Application per environment from a list generator.
+# Adding a new environment = adding one entry to the list.
+# No manual Application CR creation needed.
+#
+# Replace REPO_URL with your actual GitHub repo URL before applying.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-app-environments
+  namespace: openshift-gitops
+  labels:
+    demo: gitops
+    layer: applicationset
+spec:
+  generators:
+  - list:
+      elements:
+      - env: dev
+        namespace: gitops-dev
+        autoSync: "true"
+        prune: "true"
+      - env: staging
+        namespace: gitops-staging
+        autoSync: "true"
+        prune: "false"          # staging: no auto-prune — require manual approval
+      - env: prod
+        namespace: gitops-prod
+        autoSync: "false"       # prod: manual sync only — requires human gate
+        prune: "false"
+  template:
+    metadata:
+      name: "demo-app-{{env}}"
+      namespace: openshift-gitops
+      labels:
+        demo: gitops
+        environment: "{{env}}"
+      finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/enzobercasio/gitops-demo-repo
+        targetRevision: main
+        path: "overlays/{{env}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{namespace}}"
+      syncPolicy:
+        automated:
+          prune: false                  # overridden per-env by the template below
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - PrunePropagationPolicy=foreground
